@@ -1,11 +1,13 @@
-import { ReactNode, createContext, useEffect } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
+
 export const SocketContext = createContext<Socket | null>(null);
 const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
+  const [messages, setMessages] = useState<string[]>([]);
   const { token } = useToken();
   useEffect(() => {
     if (token) {
@@ -14,14 +16,19 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
           position: "top-right",
         });
       });
+
+      socket.on("receive_message", (data) => {
+        setMessages((prev) => [...prev, data?.message]);
+      });
     }
 
     return () => {
       socket.off("notify");
+      socket.off("receive_message");
     };
   }, [token]);
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={{ socket, messages, setMessages }}>
       <ToastContainer />
       {children}
     </SocketContext.Provider>
