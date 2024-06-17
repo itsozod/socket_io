@@ -3,7 +3,13 @@ import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
 
-export const SocketContext = createContext<Socket | null>(null);
+interface SocketContextType {
+  socket: Socket;
+  messages: string[];
+  setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export const SocketContext = createContext<SocketContextType | null>(null);
 const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
