@@ -4,7 +4,7 @@ import Header from "../header/Header";
 const Wrapper = ({ children }: { children: ReactNode }) => {
   return (
     <>
-      <div>
+      <div className="bg-[#202020] h-[100vh]">
         <Header />
         <div>{children}</div>
       </div>
