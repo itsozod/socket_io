@@ -12,16 +12,19 @@ import {
 import { useToken } from "../../pages/login/store";
 import { Link } from "react-router-dom";
 import { useProfile } from "./store";
-import { jwtDecode } from "jwt-decode";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
+interface CustomJwtPayload extends JwtPayload {
+  username?: string;
+}
 
 const Header = () => {
   const { logOut, token } = useToken();
   const { username, setName } = useProfile();
 
   useEffect(() => {
-    const username = jwtDecode(token as string);
-    setName(username?.username);
+    const decoded = jwtDecode<CustomJwtPayload>(token as string);
+    setName(decoded?.username as string);
   }, []);
   return (
     <>
