@@ -10,7 +10,7 @@ interface SocketContextType {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-gold.vercel.app");
+const socket = io("https://socket-io-server-4unqhu1ro-itsozods-projects.vercel.app/");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<string[]>([]);
