@@ -1,8 +1,0 @@
-POST https://d00f63aca8474f91.mokky.dev/register
-content-type: application/json
-
-{
-    "username": "Ozod",
-    "email": "ozod@mail.com",
-    "password": "290505"
-}
