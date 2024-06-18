@@ -15,7 +15,7 @@ import { useProfile } from "./store";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 interface CustomJwtPayload extends JwtPayload {
-  username?: string;
+  username: string;
 }
 
 const Header = () => {
