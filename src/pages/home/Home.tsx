@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -16,29 +16,60 @@ const Home = () => {
 
   const sendMessage = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    socket?.emit("send_message", { message });
-    setMessages((prev) => [...prev, message]);
+    const messageObj = {
+      id: Date.now(),
+      message,
+      username,
+      event: "sent",
+    };
+    socket?.emit("send_message", messageObj);
+    setMessages((prev) => [...prev, messageObj]);
+    setMessage("");
   };
+
+  const MessagesParser = useMemo(() => {
+    return messages?.map((mess) => {
+      return (
+        <>
+          {mess?.event === "receive" ? (
+            <div
+              key={mess.id}
+              style={{
+                marginRight: "auto",
+              }}
+              className="bg-[blue] p-3 m-1 rounded-md text-white"
+            >
+              {mess?.message}
+              <p className="text-[#7B7B7B]">{mess?.username}!</p>
+            </div>
+          ) : (
+            <div
+              key={mess.id}
+              style={{
+                marginLeft: "auto",
+              }}
+              className="bg-[#124c12] p-3 m-1 rounded-md text-white"
+            >
+              {mess?.message}
+              <p className="text-[#7B7B7B]">{mess?.username}!</p>
+            </div>
+          )}
+        </>
+      );
+    });
+  }, [messages]);
 
   return (
     <>
       <h1 className="text-center">Welcome to ChitChat {username}</h1>
       <div className="flex justify-center m-1 flex-col items-center">
-        <div className="bg-[#202020] flex flex-col border border-red-500 h-[500px] overflow-auto w-[100%] max-w-[600px] items-end justify-start gap-2">
+        <div className="bg-[#202020] flex flex-col border border-red-500 h-[500px] overflow-auto w-[100%] max-w-[600px] gap-2">
           {messages?.length === 0 && (
             <div className="bg-[red] p-3 text-white m-1 rounded-md">
               No messages yet!
             </div>
           )}
-          {messages?.map((mess) => {
-            return (
-              <>
-                <div className="bg-[red] p-3 m-1 rounded-md text-white">
-                  {mess}
-                </div>
-              </>
-            );
-          })}
+          {MessagesParser}
         </div>
         <form onSubmit={sendMessage} className="w-full max-w-[600px]">
           <div className="flex gap-1 justify-between mt-2">

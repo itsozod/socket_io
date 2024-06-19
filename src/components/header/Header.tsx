@@ -25,12 +25,12 @@ const Header = () => {
   useEffect(() => {
     const decoded = jwtDecode<CustomJwtPayload>(token as string);
     setName(decoded?.username as string);
-  }, []);
+  }, [setName, token]);
   return (
     <>
       <Navbar className="bg-[#D71E1E] text-white">
         <NavbarBrand>
-          <p className="font-bold text-inherit">ChatChat</p>
+          <p className="font-bold text-inherit">ChitChat</p>
         </NavbarBrand>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
