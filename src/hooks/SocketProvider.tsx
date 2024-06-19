@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
 import { useProfile } from "../components/header/store";
-// const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface SocketContextType {
   socket: Socket;
@@ -19,7 +19,7 @@ export interface Messages {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io(API_ENDPOINT);
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
@@ -28,14 +28,12 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (token) {
       socket.on("notify", (data) => {
-        console.log("Notify", data);
         toast.success(`${data?.username}: ${data?.message}`, {
           position: "top-right",
         });
       });
 
       socket.on("receive_message", (data) => {
-        console.log("Data", data);
         const messageObj = {
           id: Date.now(),
           message: data?.message,
