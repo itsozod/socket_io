@@ -4,7 +4,7 @@ import { Socket } from "socket.io-client";
 
 interface UseSocketReturn {
   socket: Socket;
-  messages: string[];
+  messages: Messages[];
   setMessages: React.Dispatch<React.SetStateAction<Messages[]>>;
 }
 
