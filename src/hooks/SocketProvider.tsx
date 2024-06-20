@@ -3,7 +3,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
 import { useProfile } from "../components/header/store";
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 interface SocketContextType {
   socket: Socket;
@@ -19,7 +18,7 @@ export interface Messages {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io(API_ENDPOINT);
+const socket = io("https://socket-io-server-2fmd.onrender.com");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
