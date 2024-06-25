@@ -16,15 +16,17 @@ const Home = () => {
 
   const sendMessage = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const messageObj = {
-      id: Date.now(),
-      message,
-      username,
-      event: "sent",
-    };
-    socket?.emit("send_message", messageObj);
-    setMessages((prev) => [...prev, messageObj]);
-    setMessage("");
+    if (message?.trim() !== "") {
+      const messageObj = {
+        id: Date.now(),
+        message,
+        username,
+        event: "sent",
+      };
+      socket?.emit("send_message", messageObj);
+      setMessages((prev) => [...prev, messageObj]);
+      setMessage("");
+    }
   };
 
   const MessagesParser = useMemo(() => {
