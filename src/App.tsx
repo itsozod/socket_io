@@ -15,10 +15,10 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<ProtectedRoute onlyFor={token} />}>
-          <Route path="/" element={<Home />} />
+          <Route index element={<Home />} />
         </Route>
         <Route path="/chat" element={<ProtectedRoute onlyFor={token} />}>
-          <Route path="/chat" element={<Chat />} />
+          <Route index element={<Chat />} />
         </Route>
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
