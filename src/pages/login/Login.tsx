@@ -5,18 +5,8 @@ import { Button, Input } from "@nextui-org/react";
 import { ChangeEvent, useState } from "react";
 import UserIcon from "../../assets/icons/UserIcon";
 import { useToken } from "./store";
+
 const Login = () => {
-  const { setToken } = useToken();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const signIn = async () => {
     try {
       const res = await fetch("https://d00f63aca8474f91.mokky.dev/auth", {
@@ -35,10 +25,22 @@ const Login = () => {
     }
   };
 
+  const { setToken } = useToken();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     await signIn();
   };
+
   return (
     <>
       <div className="bg-[#202020] h-[100vh]">
