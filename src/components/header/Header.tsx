@@ -2,7 +2,7 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
+  // NavbarItem,
   Dropdown,
   DropdownTrigger,
   Avatar,
@@ -10,7 +10,7 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { useToken } from "../../pages/login/store";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useProfile } from "./store";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
@@ -30,14 +30,24 @@ const Header = () => {
     <>
       <Navbar className="bg-[#D71E1E] text-white">
         <NavbarBrand>
-          <p className="font-bold text-inherit">ChitChat</p>
+          <p
+            style={{
+              fontFamily: "Playwrite IE, cursive",
+              fontOpticalSizing: "auto",
+              fontWeight: "bolder",
+              fontStyle: "normal",
+            }}
+            className="font-bold text-inherit text-2xl"
+          >
+            next chat
+          </p>
         </NavbarBrand>
 
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
           <NavbarItem>
             <Link to={"/chat"}>Chat</Link>
           </NavbarItem>
-        </NavbarContent>
+        </NavbarContent> */}
 
         <NavbarContent as="div" justify="end">
           <Dropdown placement="bottom-end">

@@ -63,8 +63,18 @@ const Home = () => {
 
   return (
     <>
-      <h1 className="text-center">Welcome to ChitChat {username}</h1>
-      <div className="flex justify-center m-1 flex-col items-center">
+      <div className="flex justify-start p-2 gap-4 flex-col items-center bg-[#202020] min-h-[100dvh]">
+        <h1
+          style={{
+            fontFamily: "Playwrite IE, cursive",
+            fontOpticalSizing: "auto",
+            fontWeight: "bolder",
+            fontStyle: "normal",
+          }}
+          className="text-center text-white text-2xl"
+        >
+          Welcome {username}
+        </h1>
         <div className="bg-[#202020] flex flex-col border border-red-500 h-[500px] overflow-auto w-[100%] max-w-[600px] gap-2">
           {messages?.length === 0 && (
             <div className="bg-[red] p-3 text-white m-1 rounded-md">
