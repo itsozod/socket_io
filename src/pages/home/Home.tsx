@@ -63,7 +63,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex justify-start p-2 gap-4 flex-col items-center bg-[#202020] min-h-[100dvh]">
+      <div className="flex justify-start p-2 gap-4 flex-col items-center bg-[#202020] h-svh">
         <h1
           style={{
             fontFamily: "Playwrite IE, cursive",

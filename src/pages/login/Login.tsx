@@ -54,7 +54,7 @@ const Login = () => {
   return (
     <>
       <div className="bg-[#202020] h-[100vh]">
-        <div className="flex justify-center items-center flex-col h-[100vh] g-10">
+        <div className="flex justify-center items-center flex-col h-svh g-10">
           <div className="w-[100%] max-w-[300px] p-5 rounded-md border border-red-500">
             <div className="flex items-center flex-col gap-2">
               <h1
