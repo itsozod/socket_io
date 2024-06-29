@@ -5,14 +5,20 @@ import { Button, Input } from "@nextui-org/react";
 import { ChangeEvent, useState } from "react";
 import UserIcon from "../../assets/icons/UserIcon";
 import { useToken } from "./store";
+import useSWRMutation from "swr/mutation";
+
+type FormData = {
+  username: string;
+  password: string;
+};
 
 const Login = () => {
-  const signIn = async () => {
+  const signIn = async (url: string, { arg }: { arg: FormData }) => {
     try {
-      const res = await fetch("https://d00f63aca8474f91.mokky.dev/auth", {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(arg),
       });
       const data = await res.json();
       if (data?.token) {
@@ -24,6 +30,10 @@ const Login = () => {
       console.log(e);
     }
   };
+  const { isMutating, trigger: login } = useSWRMutation(
+    "https://d00f63aca8474f91.mokky.dev/auth",
+    signIn
+  );
 
   const { setToken } = useToken();
   const navigate = useNavigate();
@@ -38,7 +48,7 @@ const Login = () => {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signIn();
+    await login(formData);
   };
 
   return (
@@ -76,7 +86,11 @@ const Login = () => {
                   type="password"
                   onChange={handleChange}
                 />
-                <Button type="submit" className="bg-[red] text-[white]">
+                <Button
+                  isLoading={isMutating}
+                  type="submit"
+                  className="bg-[red] text-[white]"
+                >
                   Login
                 </Button>
               </div>

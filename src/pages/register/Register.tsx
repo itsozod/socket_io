@@ -2,10 +2,17 @@ import { Button, Input } from "@nextui-org/react";
 import EmailIcon from "../../assets/icons/EmailIcon";
 import PasswordIcon from "../../assets/icons/PasswordIcon";
 import UserIcon from "../../assets/icons/UserIcon";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
+import useSWRMutation from "swr/mutation";
 
+type SignUpType = {
+  username: string;
+  email: string;
+  password: string;
+};
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -16,23 +23,31 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const signUp = async () => {
+  const signUp = async (url: string, { arg }: { arg: SignUpType }) => {
     try {
-      const res = await fetch("https://d00f63aca8474f91.mokky.dev/register", {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(arg),
       });
       const data = await res.json();
+      if (data?.token) {
+        navigate("/signin");
+      }
       return data;
     } catch (e) {
       console.log(e);
     }
   };
 
+  const { isMutating, trigger: register } = useSWRMutation(
+    "https://d00f63aca8474f91.mokky.dev/register",
+    signUp
+  );
+
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signUp();
+    await register(formData);
   };
   return (
     <>
@@ -82,7 +97,11 @@ const Register = () => {
                   type="password"
                   onChange={handleChange}
                 />
-                <Button type="submit" className="bg-[red] text-[white]">
+                <Button
+                  isLoading={isMutating}
+                  type="submit"
+                  className="bg-[red] text-[white]"
+                >
                   Create Account
                 </Button>
               </div>
