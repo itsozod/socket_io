@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,6 +22,7 @@ const Home = () => {
         message,
         username,
         event: "sent",
+        seen: false,
       };
       socket?.emit("send_message", messageObj);
       setMessages((prev) => [...prev, messageObj]);
@@ -29,12 +30,33 @@ const Home = () => {
     }
   };
 
+  const handleMessageStatus = (messageId: number) => {
+    console.log("mouse enter", messageId);
+    socket?.emit("message_seen", messageId);
+  };
+
+  useEffect(() => {
+    socket.on("message_seen_update", (data) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === data.messageId ? { ...msg, seen: true } : msg
+        )
+      );
+    });
+    return () => {
+      socket.off("message_seen_update");
+    };
+  }, [socket, setMessages]);
+
   const MessagesParser = useMemo(() => {
     return messages?.map((mess) => {
       return (
         <>
           {mess?.event === "receive" ? (
             <div
+              onMouseEnter={() => {
+                handleMessageStatus(mess?.id);
+              }}
               key={mess.id}
               style={{
                 marginRight: "auto",
@@ -54,6 +76,7 @@ const Home = () => {
             >
               {mess?.message}
               <p className="text-[#7B7B7B]">{mess?.username}!</p>
+              <p>{mess?.seen ? "Seen" : "Unseen"}</p>
             </div>
           )}
         </>

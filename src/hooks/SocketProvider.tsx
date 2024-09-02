@@ -15,15 +15,18 @@ export interface Messages {
   message: string;
   username: string;
   event: string;
+  seen: boolean;
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
+// const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
   const { token } = useToken();
   const { username } = useProfile();
+
   useEffect(() => {
     if (token) {
       socket.on("notify", (data) => {
@@ -33,10 +36,13 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
       });
 
       socket.on("receive_message", (data) => {
+        console.log("received", data);
+
         const messageObj = {
-          id: Date.now(),
+          id: data?.id,
           message: data?.message,
           username: data?.username,
+          seen: data?.seen,
           event: "receive",
         };
 
