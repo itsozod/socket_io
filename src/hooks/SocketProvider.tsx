@@ -18,7 +18,7 @@ export interface Messages {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io();
+const socket = io("https://socket-io-server-2fmd.onrender.com");
 // const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
