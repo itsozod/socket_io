@@ -2,7 +2,6 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  // NavbarItem,
   Dropdown,
   DropdownTrigger,
   Avatar,
@@ -10,22 +9,25 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { useToken } from "../../pages/login/store";
-// import { Link } from "react-router-dom";
 import { useProfile } from "./store";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 interface CustomJwtPayload extends JwtPayload {
+  id: number;
   username: string;
 }
 
 const Header = () => {
   const { logOut, token } = useToken();
-  const { username, setName } = useProfile();
+  const { username, setName, setId } = useProfile();
 
   useEffect(() => {
-    const decoded = jwtDecode<CustomJwtPayload>(token as string);
-    setName(decoded?.username as string);
-  }, [setName, token]);
+    if (token) {
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      setId(decoded?.id);
+      setName(decoded?.username);
+    }
+  }, [setName, token, setId]);
   return (
     <>
       <Navbar className="bg-[#D71E1E] text-white">
@@ -42,12 +44,6 @@ const Header = () => {
             next chat
           </p>
         </NavbarBrand>
-
-        {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
-            <Link to={"/chat"}>Chat</Link>
-          </NavbarItem>
-        </NavbarContent> */}
 
         <NavbarContent as="div" justify="end">
           <Dropdown placement="bottom-end">

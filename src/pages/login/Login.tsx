@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import PasswordIcon from "../../assets/icons/PasswordIcon";
-
 import { Button, Input } from "@nextui-org/react";
 import { ChangeEvent, useState } from "react";
 import UserIcon from "../../assets/icons/UserIcon";
 import { useToken } from "./store";
 import useSWRMutation from "swr/mutation";
+import { toast } from "react-toastify";
+import { IconEye } from "../../assets/icons/Eye";
+import { IconEyeInvisible } from "../../assets/icons/EyeSlash";
 
 type FormData = {
   username: string;
@@ -13,6 +15,9 @@ type FormData = {
 };
 
 const Login = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
   const signIn = async (url: string, { arg }: { arg: FormData }) => {
     try {
       const res = await fetch(url, {
@@ -48,7 +53,12 @@ const Login = () => {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await login(formData);
+    const res = await login(formData);
+
+    if (res?.statusCode === 400) {
+      toast.error(res?.message?.[0]);
+    }
+    return res;
   };
 
   return (
@@ -75,7 +85,8 @@ const Login = () => {
               <div className="flex flex-col gap-10 m-3">
                 <Input
                   startContent={<UserIcon />}
-                  isClearable={true}
+                  isClearable
+                  onClear={() => setFormData({ ...formData, username: "" })}
                   name="username"
                   value={formData.username}
                   classNames={{
@@ -93,8 +104,18 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   placeholder="Enter Your password"
-                  type="password"
+                  type={isVisible ? "text" : "password"}
                   onChange={handleChange}
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                      aria-label="toggle password visibility"
+                    >
+                      {isVisible ? <IconEye /> : <IconEyeInvisible />}
+                    </button>
+                  }
                 />
                 <Button
                   isLoading={isMutating}

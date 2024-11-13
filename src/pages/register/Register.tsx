@@ -5,6 +5,9 @@ import UserIcon from "../../assets/icons/UserIcon";
 import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import useSWRMutation from "swr/mutation";
+import { toast } from "react-toastify";
+import { IconEye } from "../../assets/icons/Eye";
+import { IconEyeInvisible } from "../../assets/icons/EyeSlash";
 
 type SignUpType = {
   username: string;
@@ -13,6 +16,9 @@ type SignUpType = {
 };
 const Register = () => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -47,7 +53,11 @@ const Register = () => {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await register(formData);
+    const res = await register(formData);
+    if (res?.statusCode === 401) {
+      toast.error(res?.error);
+    }
+    return res;
   };
   return (
     <>
@@ -106,6 +116,16 @@ const Register = () => {
                   placeholder="Enter Your password"
                   type="password"
                   onChange={handleChange}
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                      aria-label="toggle password visibility"
+                    >
+                      {isVisible ? <IconEye /> : <IconEyeInvisible />}
+                    </button>
+                  }
                 />
                 <Button
                   isLoading={isMutating}

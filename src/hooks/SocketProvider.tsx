@@ -3,6 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
 import { useProfile } from "../components/header/store";
+const api = import.meta.env.VITE_API_ENDPOINT;
 
 interface SocketContextType {
   socket: Socket;
@@ -11,39 +12,37 @@ interface SocketContextType {
 }
 
 export interface Messages {
-  id: number;
+  id: number | string;
   message: string;
   username: string;
   event: string;
-  seen: boolean;
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io(api);
 // const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
   const { token } = useToken();
-  const { username } = useProfile();
+  const { username, id } = useProfile();
 
   useEffect(() => {
     if (token) {
       socket.on("notify", (data) => {
-        toast.success(`${data?.username}: ${data?.message}`, {
-          position: "top-right",
-        });
+        if (data?.id !== id) {
+          toast.success(`${data?.username}: ${data?.message}`, {
+            position: "top-right",
+          });
+        }
       });
 
       socket.on("receive_message", (data) => {
-        console.log("received", data);
-
         const messageObj = {
           id: data?.id,
           message: data?.message,
           username: data?.username,
-          seen: data?.seen,
-          event: "receive",
+          event: data?.id !== id ? "receive" : "sent",
         };
 
         setMessages((prev) => [...prev, messageObj]);
@@ -54,6 +53,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off("notify");
       socket.off("receive_message");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, username]);
   return (
     <SocketContext.Provider value={{ socket, messages, setMessages }}>
