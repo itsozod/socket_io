@@ -3,7 +3,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
 import { useProfile } from "../components/header/store";
-const api = import.meta.env.VITE_API_ENDPOINT;
 
 interface SocketContextType {
   socket: Socket;
@@ -19,7 +18,7 @@ export interface Messages {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io(api);
+const socket = io(import.meta.env.VITE_API_ENDPOINT);
 // const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
