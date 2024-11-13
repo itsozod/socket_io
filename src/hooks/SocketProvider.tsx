@@ -18,7 +18,7 @@ export interface Messages {
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io(import.meta.env.VITE_API_ENDPOINT);
+const socket = io();
 // const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
