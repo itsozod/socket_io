@@ -4,6 +4,8 @@ import useSocket from "../../hooks/useSocket";
 import { Button, Input } from "@nextui-org/react";
 import SendIcon from "../../assets/icons/SendIcon";
 import { useProfile } from "../../components/header/store";
+import { bgHandler } from "../../utils/helpers/bgHandler";
+import { marginHandler } from "../../utils/helpers/marginHandler";
 
 const Home = () => {
   const { username, id } = useProfile();
@@ -18,7 +20,6 @@ const Home = () => {
         id: id,
         message,
         username,
-        event: "sent",
       };
       socket?.emit("send_message", messageObj);
       setMessages((prev) => [...prev, messageObj]);
@@ -30,32 +31,23 @@ const Home = () => {
     return messages?.map((mess) => {
       return (
         <>
-          {mess?.event === "receive" ? (
-            <div
-              key={mess.id}
-              style={{
-                marginRight: "auto",
-              }}
-              className="bg-[blue] p-3 m-1 rounded-md text-white"
-            >
-              {mess?.message}
-              <p className="text-[#7B7B7B]">{mess?.username}!</p>
-            </div>
-          ) : (
-            <div
-              key={mess.id}
-              style={{
-                marginLeft: "auto",
-              }}
-              className="bg-[#124c12] p-3 m-1 rounded-md text-white"
-            >
-              {mess?.message}
-              <p className="text-[#7B7B7B]">{mess?.username}!</p>
-            </div>
-          )}
+          <div
+            key={mess.id}
+            className={`${bgHandler(
+              mess,
+              Number(id)
+            )} p-3 m-1 rounded-md text-white ${marginHandler(
+              mess,
+              Number(id)
+            )}`}
+          >
+            {mess?.message}
+            <p className="text-[#7B7B7B]">{mess?.username}!</p>
+          </div>
         </>
       );
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   return (

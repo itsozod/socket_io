@@ -14,12 +14,11 @@ export interface Messages {
   id: number | string;
   message: string;
   username: string;
-  event: string;
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
-// const socket = io("http://localhost:3002");
+// const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
@@ -28,7 +27,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (token) {
-      socket.on("notify", (data) => {
+      socket.on("notify", (data: Messages) => {
         if (data?.id !== id) {
           toast.success(`${data?.username}: ${data?.message}`, {
             position: "top-right",
@@ -36,12 +35,11 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      socket.on("receive_message", (data) => {
+      socket.on("receive_message", (data: Messages) => {
         const messageObj = {
           id: data?.id,
           message: data?.message,
           username: data?.username,
-          event: data?.id !== id ? "receive" : "sent",
         };
 
         setMessages((prev) => [...prev, messageObj]);

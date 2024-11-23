@@ -1,24 +1,23 @@
 import { create } from "zustand";
 
+type Info = {
+  id: number;
+  username: string;
+};
+
 type Profile = {
   id: number | string;
   username: string;
-  setName: (name: string) => void;
-  setId: (id: number) => void;
+  setUserInfo: (info: Info) => void;
 };
 
 export const useProfile = create<Profile>()((set) => ({
   id: "",
   username: "",
-  setName: (value) =>
+  setUserInfo: (info: Info) =>
     set((state) => {
-      state.username = value;
-      state.username = value;
-      return { username: state.username };
-    }),
-  setId: (value) =>
-    set((state) => {
-      state.id = value;
-      return { id: state.id };
+      state.id = info.id;
+      state.username = info.username;
+      return { id: info.id, username: info.username };
     }),
 }));

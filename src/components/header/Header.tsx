@@ -9,25 +9,12 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { useToken } from "../../pages/login/store";
-import { useProfile } from "./store";
-import { JwtPayload, jwtDecode } from "jwt-decode";
-import { useEffect } from "react";
-interface CustomJwtPayload extends JwtPayload {
-  id: number;
-  username: string;
-}
+import { tokenParser } from "../../utils/helpers/tokenParser";
 
 const Header = () => {
-  const { logOut, token } = useToken();
-  const { username, setName, setId } = useProfile();
+  const { logOut } = useToken();
+  const { username } = tokenParser();
 
-  useEffect(() => {
-    if (token) {
-      const decoded = jwtDecode<CustomJwtPayload>(token);
-      setId(decoded?.id);
-      setName(decoded?.username);
-    }
-  }, [setName, token, setId]);
   return (
     <>
       <Navbar className="bg-[#D71E1E] text-white">

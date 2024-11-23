@@ -1,13 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
 import Wrapper from "../wrapper/Wrapper";
+import { useToken } from "../../pages/login/store";
 
-const ProtectedRoute = ({ onlyFor }: { onlyFor: boolean | string | null }) => {
-  return onlyFor ? (
+const ProtectedRoute = ({ onlyFor }: { onlyFor: boolean }) => {
+  const { token } = useToken();
+
+  if (!token) return <Navigate to={"/signin"} replace={true} />;
+
+  return token && onlyFor ? (
     <Wrapper>
       <Outlet />
     </Wrapper>
   ) : (
-    <Navigate to={"/signin"} replace={true} />
+    <div>Unable to access</div>
   );
 };
 
