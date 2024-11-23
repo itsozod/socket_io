@@ -6,10 +6,20 @@ interface CustomJwtPayload extends JwtPayload {
 }
 
 export const tokenParser = () => {
-  const token = useToken.getState().token;
-  const decoded = jwtDecode<CustomJwtPayload>(token!);
-  return {
-    id: decoded.id,
-    username: decoded?.username,
-  };
+  const token = useToken?.getState()?.token;
+
+  if (!token) {
+    return { id: null, username: null };
+  }
+
+  try {
+    const decoded = jwtDecode<CustomJwtPayload>(token);
+    return {
+      id: decoded?.id || null,
+      username: decoded?.username || null,
+    };
+  } catch (error) {
+    console.error("Error decoding JWT token:", error);
+    return { id: null, username: null };
+  }
 };

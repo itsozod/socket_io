@@ -3,12 +3,12 @@ import "react-toastify/dist/ReactToastify.css";
 import useSocket from "../../hooks/useSocket";
 import { Button, Input } from "@nextui-org/react";
 import SendIcon from "../../assets/icons/SendIcon";
-import { useProfile } from "../../components/header/store";
 import { bgHandler } from "../../utils/helpers/bgHandler";
 import { marginHandler } from "../../utils/helpers/marginHandler";
+import { tokenParser } from "../../utils/helpers/tokenParser";
 
 const Home = () => {
-  const { username, id } = useProfile();
+  const { id, username } = tokenParser();
   const { socket, messages, setMessages } = useSocket();
 
   const [message, setMessage] = useState("");
@@ -30,21 +30,16 @@ const Home = () => {
   const MessagesParser = useMemo(() => {
     return messages?.map((mess) => {
       return (
-        <>
-          <div
-            key={mess.id}
-            className={`${bgHandler(
-              mess,
-              Number(id)
-            )} p-3 m-1 rounded-md text-white ${marginHandler(
-              mess,
-              Number(id)
-            )}`}
-          >
-            {mess?.message}
-            <p className="text-[#7B7B7B]">{mess?.username}!</p>
-          </div>
-        </>
+        <div
+          key={mess?.id}
+          className={`${bgHandler(
+            mess,
+            Number(id)
+          )} p-3 m-1 rounded-md text-white ${marginHandler(mess, Number(id))}`}
+        >
+          {mess?.message}
+          <p className="text-[#7B7B7B]">{mess?.username}!</p>
+        </div>
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

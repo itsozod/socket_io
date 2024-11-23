@@ -2,7 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Socket, io } from "socket.io-client";
 import { useToken } from "../pages/login/store";
-import { useProfile } from "../components/header/store";
+import { tokenParser } from "../utils/helpers/tokenParser";
 
 interface SocketContextType {
   socket: Socket;
@@ -11,19 +11,19 @@ interface SocketContextType {
 }
 
 export interface Messages {
-  id: number | string;
+  id: number | string | null;
   message: string;
-  username: string;
+  username: string | null;
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
-// const socket = io("http://localhost:3002");
+// const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
   const { token } = useToken();
-  const { username, id } = useProfile();
+  const { id } = tokenParser();
 
   useEffect(() => {
     if (token) {
@@ -51,7 +51,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off("receive_message");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, username]);
+  }, [token]);
   return (
     <SocketContext.Provider value={{ socket, messages, setMessages }}>
       <ToastContainer />

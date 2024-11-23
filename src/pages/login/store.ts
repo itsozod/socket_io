@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 type Token = {
-  token: string | null;
+  token: string;
   setToken: (token: string) => void;
   logOut: () => void;
 };
 
 export const useToken = create<Token>()((set) => ({
-  token: localStorage.getItem("token") || null,
+  token: localStorage.getItem("token") || "",
   setToken: (value) =>
     set((state) => {
       state.token = value;
@@ -16,7 +16,7 @@ export const useToken = create<Token>()((set) => ({
     }),
   logOut: () =>
     set((state) => {
-      state.token = null;
+      state.token = "";
       localStorage.removeItem("token");
       return { token: state.token };
     }),

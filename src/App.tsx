@@ -19,7 +19,7 @@ function App() {
         </Route>
         <Route
           path="/chat"
-          element={<ProtectedRoute onlyFor={accesses[Number(id)]?.read} />}
+          element={<ProtectedRoute onlyFor={accesses?.[Number(id)]?.read} />}
         >
           <Route index element={<Chat />} />
         </Route>
