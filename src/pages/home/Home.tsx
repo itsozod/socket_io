@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import useSocket from "../../hooks/useSocket";
 import { Button, Input } from "@nextui-org/react";
@@ -8,6 +8,7 @@ import { marginHandler } from "../../utils/helpers/marginHandler";
 import { tokenParser } from "../../utils/helpers/tokenParser";
 
 const Home = () => {
+  const lastMessage = useRef<HTMLDivElement>(null);
   const { id, username } = tokenParser();
   const { socket, messages, setMessages } = useSocket();
 
@@ -20,6 +21,7 @@ const Home = () => {
         id: id,
         message,
         username,
+        messageId: Date.now(),
       };
       socket?.emit("send_message", messageObj);
       setMessages((prev) => [...prev, messageObj]);
@@ -31,7 +33,7 @@ const Home = () => {
     return messages?.map((mess) => {
       return (
         <div
-          key={mess?.id}
+          key={mess?.messageId}
           className={`${bgHandler(
             mess,
             Number(id)
@@ -42,6 +44,17 @@ const Home = () => {
         </div>
       );
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (messages?.length) {
+      lastMessage.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
@@ -66,6 +79,7 @@ const Home = () => {
             </div>
           )}
           {MessagesParser}
+          <div ref={lastMessage}></div>
         </div>
         <form onSubmit={sendMessage} className="w-full max-w-[600px]">
           <div className="flex gap-1 justify-between mt-2">

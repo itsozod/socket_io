@@ -14,11 +14,12 @@ export interface Messages {
   id: number | string | null;
   message: string;
   username: string | null;
+  messageId: number;
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
-const socket = io("https://socket-io-server-2fmd.onrender.com");
-// const socket = io("http://localhost:3002");
+// const socket = io("https://socket-io-server-2fmd.onrender.com");
+const socket = io("http://localhost:3002");
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Messages[]>([]);
@@ -40,6 +41,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
           id: data?.id,
           message: data?.message,
           username: data?.username,
+          messageId: data?.messageId,
         };
 
         setMessages((prev) => [...prev, messageObj]);
